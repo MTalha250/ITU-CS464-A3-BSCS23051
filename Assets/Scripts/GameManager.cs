@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -7,13 +8,16 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     [SerializeField] int targetScore = 5;
+    [SerializeField] float respawnDelay = 0.6f, spawnProtection = 1.5f;
     [SerializeField] string title = "Level01", tip = "";
-    [SerializeField] TMP_Text titleText, scoreText, messageText, winText;
+    [SerializeField] Health player;
+    [SerializeField] Transform respawnPoint;
+    [SerializeField] TMP_Text titleText, scoreText, heartsText, messageText, winText;
     [SerializeField] GameObject winPanel, nextButton;
 
     int score;
     float messageUntil;
-    bool over;
+    bool over, respawning;
 
     void Awake() => Instance = this;
 
@@ -21,6 +25,7 @@ public class GameManager : MonoBehaviour
     {
         titleText.text = title;
         UpdateScore();
+        UpdateHealth();
         Show(tip, 6f);
     }
 
@@ -37,10 +42,33 @@ public class GameManager : MonoBehaviour
 
     void UpdateScore() => scoreText.text = $"Coins: {score} / {targetScore}";
 
+    public void UpdateHealth()
+    {
+        heartsText.text = $"Hearts: {Mathf.Max(player.Current, 0)} / {player.Max}";
+    }
+
     public void ReachGoal()
     {
         if (score >= targetScore) Win();
         else Show($"You need {targetScore - score} more coins", 2f);
+    }
+
+    public void PlayerDied()
+    {
+        if (over || respawning) return;
+        StartCoroutine(Respawn());
+    }
+
+    IEnumerator Respawn()
+    {
+        respawning = true;
+        yield return new WaitForSeconds(respawnDelay);     // a beat, so the hit's knockback is over
+        Rigidbody body = player.GetComponent<Rigidbody>();
+        body.position = respawnPoint.position;
+        player.transform.position = respawnPoint.position;
+        body.linearVelocity = Vector3.zero;                // back standing still
+        player.Restore(spawnProtection);                   // full hearts and a moment of protection
+        respawning = false;
     }
 
     void Show(string text, float seconds)
