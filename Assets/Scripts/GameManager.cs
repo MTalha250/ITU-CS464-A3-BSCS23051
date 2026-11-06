@@ -12,17 +12,19 @@ public class GameManager : MonoBehaviour
     [SerializeField] string title = "Level01", tip = "";
     [SerializeField] Health player;
     [SerializeField] Transform respawnPoint;
-    [SerializeField] TMP_Text titleText, scoreText, heartsText, livesText, messageText, winText;
+    [SerializeField] TMP_Text titleText, scoreText, heartsText, livesText, boostText, messageText, winText;
     [SerializeField] GameObject winPanel, losePanel, nextButton;
 
-    int score;
+    int score, shownBoost = -1;
     float messageUntil;
     bool over, respawning;
+    PlayerController controller;
 
     void Awake() => Instance = this;
 
     void Start()
     {
+        controller = player.GetComponent<PlayerController>();
         titleText.text = title;
         UpdateScore();
         UpdateHealth();
@@ -32,6 +34,10 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         if (messageText.text != "" && Time.time >= messageUntil) messageText.text = "";
+        int boost = Mathf.CeilToInt(controller.BoostLeft);   // only touch the text when it changes
+        if (boost == shownBoost) return;
+        shownBoost = boost;
+        boostText.text = boost > 0 ? $"Speed boost: {boost} s" : "";
     }
 
     public void AddScore(int amount)

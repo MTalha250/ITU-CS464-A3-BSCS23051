@@ -20,7 +20,10 @@ public class PlayerController : MonoBehaviour
     float lastGroundedTime = -1f, lastPressedTime = -1f, airTime;
     Vector3 groundPoint, groundNormal;             // last ground contact, for the gizmo
     Coroutine squash;
-    float noControlUntil;
+    float speedMultiplier = 1f, boostEnd, noControlUntil;
+    Coroutine boost;
+
+    public float BoostLeft => boost == null ? 0f : boostEnd - Time.time;
 
     void Awake()
     {
@@ -75,7 +78,7 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        Vector3 v = move * speed;                      // move is already clamped to length 1
+        Vector3 v = move * speed * speedMultiplier;    // move is already clamped to length 1
         if (Time.time >= noControlUntil)               // a knockback keeps its push until then
             rb.linearVelocity = new Vector3(v.x, rb.linearVelocity.y, v.z);
 
@@ -121,6 +124,22 @@ public class PlayerController : MonoBehaviour
         rb.linearVelocity = new Vector3(0f, v.y, 0f);  // same throw at a run as standing still
         rb.AddForce(push, ForceMode.Impulse);
         noControlUntil = Time.time + seconds;
+    }
+
+    // A second pickup while one runs: refresh. Stop the running timer and start a full new one.
+    public void BoostSpeed(float multiplier, float seconds)
+    {
+        if (boost != null) StopCoroutine(boost);
+        boost = StartCoroutine(Boost(multiplier, seconds));
+    }
+
+    IEnumerator Boost(float multiplier, float seconds)
+    {
+        speedMultiplier = multiplier;
+        boostEnd = Time.time + seconds;
+        yield return new WaitForSeconds(seconds);
+        speedMultiplier = 1f;
+        boost = null;
     }
 
     IEnumerator Squash()
