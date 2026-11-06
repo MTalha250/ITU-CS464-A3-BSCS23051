@@ -102,9 +102,10 @@ GameObject:
   - component: {fileID: 5731639568534638550}
   - component: {fileID: 8149142231851416534}
   - component: {fileID: 2326523729602267545}
+  - component: {fileID: 5285587955915819806}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -195,3 +196,18 @@ MonoBehaviour:
   body: {fileID: 6790781667269836973}
   squashY: 0.7
   squashTime: 0.25
+--- !u!114 &5285587955915819806
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8128825685903632645}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d147338bad884a569a4b6b3d3520e49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Health
+  max: 3
+  iFrames: 1
+  body: {fileID: 1447418314289407630}
