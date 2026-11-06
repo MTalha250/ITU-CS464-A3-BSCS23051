@@ -7,13 +7,13 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    [SerializeField] int targetScore = 5;
+    [SerializeField] int targetScore = 5, lives = 3;
     [SerializeField] float respawnDelay = 0.6f, spawnProtection = 1.5f;
     [SerializeField] string title = "Level01", tip = "";
     [SerializeField] Health player;
     [SerializeField] Transform respawnPoint;
-    [SerializeField] TMP_Text titleText, scoreText, heartsText, messageText, winText;
-    [SerializeField] GameObject winPanel, nextButton;
+    [SerializeField] TMP_Text titleText, scoreText, heartsText, livesText, messageText, winText;
+    [SerializeField] GameObject winPanel, losePanel, nextButton;
 
     int score;
     float messageUntil;
@@ -45,6 +45,7 @@ public class GameManager : MonoBehaviour
     public void UpdateHealth()
     {
         heartsText.text = $"Hearts: {Mathf.Max(player.Current, 0)} / {player.Max}";
+        livesText.text = $"Lives: {lives}";
     }
 
     public void ReachGoal()
@@ -55,8 +56,11 @@ public class GameManager : MonoBehaviour
 
     public void PlayerDied()
     {
-        if (over || respawning) return;
-        StartCoroutine(Respawn());
+        if (over || respawning) return;   // a fall during the respawn beat doesn't cost a second life
+        lives--;
+        UpdateHealth();
+        if (lives <= 0) Lose();
+        else StartCoroutine(Respawn());
     }
 
     IEnumerator Respawn()
@@ -85,6 +89,13 @@ public class GameManager : MonoBehaviour
         winText.text = last ? "You beat all five levels!" : "Level complete!";
         nextButton.SetActive(!last);
         winPanel.SetActive(true);
+        Time.timeScale = 0f;
+    }
+
+    void Lose()
+    {
+        over = true;
+        losePanel.SetActive(true);
         Time.timeScale = 0f;
     }
 
