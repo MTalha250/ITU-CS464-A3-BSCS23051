@@ -1,6 +1,6 @@
 # CS464 Assignment 03 · Muhammad Talha · BSCS23051
 
-- **Video (60–120 s):** link coming soon
+- **Video (60–120 s):** [All five levels, Google Drive](https://drive.google.com/file/d/1jdP3D--ADn5wjT_TDDVqgo32Te0jUwHt/view?usp=sharing)
 - **Started from:** my Assignment 02 repo, https://github.com/MTalha250/ITU-CS-464-A2-BSCS23051. I kept its player controller (jump, coyote time, fall gravity, camera) and my five greybox levels, so this assignment adds the game on top of them.
 - **Controls:** WASD or the arrow keys to move (relative to the camera), Space to jump
 - **To win a level:** collect the number of coins shown on the HUD (7 of 7 in Level01, 5 of 6 in Level02, 8 of 11 in Level03, 7 of 8 in Level04, 6 of 8 in Level05), then touch the green goal. Touching it early just tells you how many coins are left.
